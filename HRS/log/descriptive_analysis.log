@@ -1,0 +1,1083 @@
+-------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/Sophia/Desktop/Research/Norma/ICinLTC/log/descriptive_analysis.log
+  log type:  text
+ opened on:  10 Dec 2021, 09:34:53
+
+. 
+. *\Import datasets
+. *1. Read in Rand HRS Longitudinal File 2016
+. use "$data/randhrs1992_2016v2.dta", clear
+
+. *2. Subset Rand HRS Longitudinal File 2016 to only include wave 13
+. keep if inw13 == 1
+(21,140 observations deleted)
+
+. distinct hhidpn //20,912 unique observations
+
+-------------------------------
+        |     total   distinct
+--------+----------------------
+ hhidpn |     20912      20912
+-------------------------------
+
+. tempfile temp2016
+
+. sa `temp2016'
+file /var/folders/0c/cmyfzq7x4zsbb_8fq5ly69ch0000gn/T//S_01662.000001 saved as .dta format
+
+. *3. Merge with the 2016 Rand Biennial Data
+. use "$data/h16f2a.dta", clear
+
+. distinct hhidpn //20,912 unique observations
+
+-------------------------------
+        |     total   distinct
+--------+----------------------
+ hhidpn |     20912      20912
+-------------------------------
+
+. merge 1:1 hhidpn using `temp2016',gen (merge_1)
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                             0
+    Matched                            20,912  (merge_1==3)
+    -----------------------------------------
+
+. //all matched, good.
+. 
+. *\ Define Sample: people aged 65 and above
+. tab r13agey_e, m //no missing, good.
+
+r13agey_e:w |
+   13 r age |
+ (years) at |
+ ivw endmon |      Freq.     Percent        Cum.
+------------+-----------------------------------
+         21 |          2        0.01        0.01
+         24 |          1        0.00        0.01
+         25 |          1        0.00        0.02
+         26 |          3        0.01        0.03
+         28 |          2        0.01        0.04
+         29 |          7        0.03        0.08
+         30 |          2        0.01        0.09
+         31 |          5        0.02        0.11
+         32 |          6        0.03        0.14
+         33 |          7        0.03        0.17
+         34 |          7        0.03        0.21
+         35 |         13        0.06        0.27
+         36 |         12        0.06        0.33
+         37 |         13        0.06        0.39
+         38 |         13        0.06        0.45
+         39 |         19        0.09        0.54
+         40 |         18        0.09        0.63
+         41 |         21        0.10        0.73
+         42 |         31        0.15        0.88
+         43 |         45        0.22        1.09
+         44 |         43        0.21        1.30
+         45 |         62        0.30        1.59
+         46 |         86        0.41        2.00
+         47 |         86        0.41        2.41
+         48 |        114        0.55        2.96
+         49 |        145        0.69        3.65
+         50 |        294        1.41        5.06
+         51 |        492        2.35        7.41
+         52 |        689        3.29       10.71
+         53 |        755        3.61       14.32
+         54 |        782        3.74       18.06
+         55 |        812        3.88       21.94
+         56 |        791        3.78       25.72
+         57 |        849        4.06       29.78
+         58 |        701        3.35       33.13
+         59 |        712        3.40       36.54
+         60 |        703        3.36       39.90
+         61 |        656        3.14       43.04
+         62 |        669        3.20       46.24
+         63 |        614        2.94       49.17
+         64 |        635        3.04       52.21
+         65 |        593        2.84       55.04
+         66 |        568        2.72       57.76
+         67 |        573        2.74       60.50
+         68 |        451        2.16       62.66
+         69 |        452        2.16       64.82
+         70 |        348        1.66       66.48
+         71 |        338        1.62       68.10
+         72 |        346        1.65       69.75
+         73 |        391        1.87       71.62
+         74 |        454        2.17       73.79
+         75 |        504        2.41       76.21
+         76 |        485        2.32       78.52
+         77 |        457        2.19       80.71
+         78 |        443        2.12       82.83
+         79 |        448        2.14       84.97
+         80 |        404        1.93       86.90
+         81 |        380        1.82       88.72
+         82 |        322        1.54       90.26
+         83 |        280        1.34       91.60
+         84 |        283        1.35       92.95
+         85 |        257        1.23       94.18
+         86 |        198        0.95       95.13
+         87 |        163        0.78       95.91
+         88 |        166        0.79       96.70
+         89 |        134        0.64       97.34
+         90 |        118        0.56       97.91
+         91 |         92        0.44       98.35
+         92 |         82        0.39       98.74
+         93 |         73        0.35       99.09
+         94 |         46        0.22       99.31
+         95 |         45        0.22       99.52
+         96 |         42        0.20       99.72
+         97 |         19        0.09       99.81
+         98 |         16        0.08       99.89
+         99 |          5        0.02       99.91
+        100 |          6        0.03       99.94
+        101 |          6        0.03       99.97
+        102 |          2        0.01       99.98
+        103 |          3        0.01      100.00
+        107 |          1        0.00      100.00
+------------+-----------------------------------
+      Total |     20,912      100.00
+
+. rename r13agey_e age
+
+. keep if age >= 65
+(10,918 observations deleted)
+
+. tab age, m //9,994 observations remain. 
+
+r13agey_e:w |
+   13 r age |
+ (years) at |
+ ivw endmon |      Freq.     Percent        Cum.
+------------+-----------------------------------
+         65 |        593        5.93        5.93
+         66 |        568        5.68       11.62
+         67 |        573        5.73       17.35
+         68 |        451        4.51       21.86
+         69 |        452        4.52       26.39
+         70 |        348        3.48       29.87
+         71 |        338        3.38       33.25
+         72 |        346        3.46       36.71
+         73 |        391        3.91       40.62
+         74 |        454        4.54       45.17
+         75 |        504        5.04       50.21
+         76 |        485        4.85       55.06
+         77 |        457        4.57       59.64
+         78 |        443        4.43       64.07
+         79 |        448        4.48       68.55
+         80 |        404        4.04       72.59
+         81 |        380        3.80       76.40
+         82 |        322        3.22       79.62
+         83 |        280        2.80       82.42
+         84 |        283        2.83       85.25
+         85 |        257        2.57       87.82
+         86 |        198        1.98       89.80
+         87 |        163        1.63       91.43
+         88 |        166        1.66       93.10
+         89 |        134        1.34       94.44
+         90 |        118        1.18       95.62
+         91 |         92        0.92       96.54
+         92 |         82        0.82       97.36
+         93 |         73        0.73       98.09
+         94 |         46        0.46       98.55
+         95 |         45        0.45       99.00
+         96 |         42        0.42       99.42
+         97 |         19        0.19       99.61
+         98 |         16        0.16       99.77
+         99 |          5        0.05       99.82
+        100 |          6        0.06       99.88
+        101 |          6        0.06       99.94
+        102 |          2        0.02       99.96
+        103 |          3        0.03       99.99
+        107 |          1        0.01      100.00
+------------+-----------------------------------
+      Total |      9,994      100.00
+
+. 
+. *\ Generate Vars
+. *1. Rename vars
+. *** Rename PH115 (Group Meals) as Meals 
+. tab ph115, m nolab 
+
+group meals |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |        240        2.40        2.40
+          3 |          2        0.02        2.42
+          4 |          7        0.07        2.49
+          5 |        325        3.25        5.74
+          8 |          4        0.04        5.78
+          . |      9,416       94.22      100.00
+------------+-----------------------------------
+      Total |      9,994      100.00
+
+. rename ph115 Meals
+
+. *** Rename PH124 as ADLHELP
+. tab ph124, m nolab 
+
+bathing-dre |
+ssing-eatin |
+          g |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |        153        1.53        1.53
+          5 |        406        4.06        5.59
+          8 |         10        0.10        5.69
+          . |      9,425       94.31      100.00
+------------+-----------------------------------
+      Total |      9,994      100.00
+
+. rename ph124 ADLHELP 
+
+. *** Rename PH130 as NURSINGHELP
+. tab ph130, m nolab 
+
+    nursing |
+       care |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |        165        1.65        1.65
+          5 |        398        3.98        5.63
+          8 |          5        0.05        5.68
+          9 |          1        0.01        5.69
+          . |      9,425       94.31      100.00
+------------+-----------------------------------
+      Total |      9,994      100.00
+
+. rename ph130 NURSINGHELP
+
+. *** Rename PH004 as LTCRENT
+. tab ph004, m nolab 
+
+   own-rent |
+       home |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |      6,943       69.47       69.47
+          2 |      1,624       16.25       85.72
+          3 |        394        3.94       89.66
+          7 |         61        0.61       90.27
+          8 |          6        0.06       90.33
+          9 |          9        0.09       90.42
+          . |        957        9.58      100.00
+------------+-----------------------------------
+      Total |      9,994      100.00
+
+. rename ph004 LTCRENT
+
+. 
+. *2. Formal Rensidential LTC Care
+. *** Independent Living = Meals Yes, ADL HELP No, Nursing No, RENT Yes;
+. gen IL = 0
+
+. replace IL = 1 if Meals ==1 & ADLHELP ==5 & NURSINGHELP ==5 & LTCRENT ==2
+(53 real changes made)
+
+. tab IL, m 
+
+         IL |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |      9,941       99.47       99.47
+          1 |         53        0.53      100.00
+------------+-----------------------------------
+      Total |      9,994      100.00
+
+. *** Assisted Living = Meals Yes, ADL HELP Yes, Nursing No, RENT Yes;
+. gen AL = 0
+
+. replace AL = 1 if Meals ==1 & ADLHELP == 1 & NURSINGHELP ==5 & LTCRENT == 2
+(22 real changes made)
+
+. tab AL, m
+
+         AL |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |      9,972       99.78       99.78
+          1 |         22        0.22      100.00
+------------+-----------------------------------
+      Total |      9,994      100.00
+
+. *** Continuing Care Retirement Community = Meals Yes, ADL HELP Yes, Nursing Yes, RENT or Own 
+. gen CCRC = 0 
+
+. replace CCRC = 1 if Meals ==1 & ADLHELP ==1 & NURSINGHELP ==1
+(111 real changes made)
+
+. tab CCRC,m 
+
+       CCRC |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |      9,883       98.89       98.89
+          1 |        111        1.11      100.00
+------------+-----------------------------------
+      Total |      9,994      100.00
+
+. *** Combine three above because frequencies are so low for them separately
+. gen FC_COMBO = 0
+
+. replace FC_COMBO = 1 if CCRC ==1 | AL ==1 | IL ==1 
+(186 real changes made)
+
+. 
+. *** Save it as a tempfile
+. tempfile hrs2016
+
+. save `hrs2016'
+file /var/folders/0c/cmyfzq7x4zsbb_8fq5ly69ch0000gn/T//S_01662.000002 saved as .dta format
+
+. 
+. *\ Identify people who are currently living in a care facility
+. keep if FC_COMBO ==1
+(9,808 observations deleted)
+
+. tab FC_COMBO, m //186 observations 
+
+   FC_COMBO |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |        186      100.00      100.00
+------------+-----------------------------------
+      Total |        186      100.00
+
+. *** Save as a tempfile
+. tempfile rensidentialfacility
+
+. save `rensidentialfacility'
+file /var/folders/0c/cmyfzq7x4zsbb_8fq5ly69ch0000gn/T//S_01662.000003 saved as .dta format
+
+. 
+. *\ Identify people who are currently living in a nursing home
+. use `hrs2016', clear
+
+. tab r13nhmliv CCRC, m
+
+r13nhmliv: |
+  w13 live |
+   in nurs |
+   home at |         CCRC
+     iview |         0          1 |     Total
+-----------+----------------------+----------
+      0.no |     9,487        100 |     9,587 
+     1.yes |       396         11 |       407 
+-----------+----------------------+----------
+     Total |     9,883        111 |     9,994 
+
+. keep if r13nhmliv == 1 & CCRC!=1 & FC_COMBO==0
+(9,598 observations deleted)
+
+. tab r13nhmliv CCRC, m //396 observations 
+
+r13nhmliv: |
+  w13 live |
+   in nurs |
+   home at |    CCRC
+     iview |         0 |     Total
+-----------+-----------+----------
+     1.yes |       396 |       396 
+-----------+-----------+----------
+     Total |       396 |       396 
+
+. *** Save as a tempfile
+. tempfile nursinghome
+
+. save `nursinghome'
+file /var/folders/0c/cmyfzq7x4zsbb_8fq5ly69ch0000gn/T//S_01662.000004 saved as .dta format
+
+. 
+. *\ Identify people who are community-dwelling
+. use `hrs2016', clear
+
+. gen nursinghome = 0
+
+. replace nursinghome = 1 if r13nhmliv == 1 & CCRC!=1 & FC_COMBO==0
+(396 real changes made)
+
+. tab nursinghome, m
+
+nursinghome |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |      9,598       96.04       96.04
+          1 |        396        3.96      100.00
+------------+-----------------------------------
+      Total |      9,994      100.00
+
+. drop if FC_COMBO==1
+(186 observations deleted)
+
+. drop if nursinghome ==1 
+(396 observations deleted)
+
+. distinct hhidpn
+
+-------------------------------
+        |     total   distinct
+--------+----------------------
+ hhidpn |      9412       9412
+-------------------------------
+
+. *** Save as a tempfile
+. tempfile community_dwelling
+
+. save `community_dwelling'
+file /var/folders/0c/cmyfzq7x4zsbb_8fq5ly69ch0000gn/T//S_01662.000005 saved as .dta format
+
+. 
+. **********************************************************************
+. *  Table 1- Community Dwelling *
+. **********************************************************************
+. *\ Read in dataset
+. use `community_dwelling', clear
+
+. 
+. *\ Age
+. ***raw mean
+. summarize age 
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+         age |      9,412    75.42913    7.352544         65        107
+
+. summarize age [aweight=r13wtrespe]
+
+    Variable |     Obs      Weight        Mean   Std. dev.       Min        Max
+-------------+-----------------------------------------------------------------
+         age |   9,412    47518671    73.95135   7.361276         65        107
+
+. 
+. *\ Gender
+. rename ragender gender
+
+. tab gender, m 
+
+ragender: r |
+     gender |      Freq.     Percent        Cum.
+------------+-----------------------------------
+     1.male |      3,875       41.17       41.17
+   2.female |      5,537       58.83      100.00
+------------+-----------------------------------
+      Total |      9,412      100.00
+
+. tab gender[aweight=r13wtrespe], m
+
+ragender: r |
+     gender |      Freq.     Percent        Cum.
+------------+-----------------------------------
+     1.male |  4,200.599       44.63       44.63
+   2.female |  5,211.401       55.37      100.00
+------------+-----------------------------------
+      Total |      9,412      100.00
+
+. 
+. *\ Race and Ethnicity
+. tablist raracem rahispan, nolab
+
+  +----------------------------------------------------------+
+  | raracem   rahispan   _Freq_   _Perc_   _CFreq_   _CPerc_ |
+  |----------------------------------------------------------|
+  |       1          0     6512    69.19      6512     69.19 |
+  |       2          0     1553    16.50      8065     85.69 |
+  |       1          1      746     7.93      8811     93.61 |
+  |       3          1      310     3.29      9121     96.91 |
+  |       3          0      247     2.62      9368     99.53 |
+  |----------------------------------------------------------|
+  |       2          1       29     0.31      9397     99.84 |
+  |      .m          1        9     0.10      9406     99.94 |
+  |       2         .m        3     0.03      9409     99.97 |
+  |      .m          0        1     0.01      9410     99.98 |
+  |       1         .m        1     0.01      9411     99.99 |
+  |----------------------------------------------------------|
+  |       3         .m        1     0.01      9412    100.00 |
+  +----------------------------------------------------------+
+
+. gen Race_Ethinic = 0
+
+. replace Race_Ethinic=1 if raracem == 1 & rahispan == 0 //non-hispanic white
+(6,512 real changes made)
+
+. replace Race_Ethinic=2 if raracem == 2 & rahispan == 0 //non-hispanic black
+(1,553 real changes made)
+
+. replace Race_Ethinic=3 if raracem == 3 & rahispan == 0 //non-hispanic other
+(247 real changes made)
+
+. replace Race_Ethinic=4 if rahispan == 1 //Hispanic-regardless of race
+(1,094 real changes made)
+
+. tab Race_Ethinic, m nolab
+
+Race_Ethini |
+          c |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |          6        0.06        0.06
+          1 |      6,512       69.19       69.25
+          2 |      1,553       16.50       85.75
+          3 |        247        2.62       88.38
+          4 |      1,094       11.62      100.00
+------------+-----------------------------------
+      Total |      9,412      100.00
+
+. tab Race_Ethinic[aweight=r13wtrespe], m
+
+Race_Ethini |
+          c |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 2.43585886        0.03        0.03
+          1 | 7,508.8542       79.78       79.81
+          2 | 875.048922        9.30       89.10
+          3 | 254.698775        2.71       91.81
+          4 | 770.962205        8.19      100.00
+------------+-----------------------------------
+      Total |      9,412      100.00
+
+. 
+. *\ Marital Status
+. gen Marital_Status = 0
+
+. replace Marital_Status = 1 if inlist(r13mstat,1,2,3) //Married/Living with partner
+(5,402 real changes made)
+
+. replace Marital_Status = 2 if inlist(r13mstat,4,5,7) //Divorced/Separate/Widowed
+(3,709 real changes made)
+
+. replace Marital_Status = 3 if r13mstat==8 //Never married
+(288 real changes made)
+
+. tab Marital_Status, m
+
+Marital_Sta |
+        tus |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |         13        0.14        0.14
+          1 |      5,402       57.39       57.53
+          2 |      3,709       39.41       96.94
+          3 |        288        3.06      100.00
+------------+-----------------------------------
+      Total |      9,412      100.00
+
+. tab Marital_Status[aweight=r13wtrespe], m
+
+Marital_Sta |
+        tus |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 19.7703084        0.21        0.21
+          1 |  5,791.323       61.53       61.74
+          2 | 3,154.8245       33.52       95.26
+          3 | 446.082253        4.74      100.00
+------------+-----------------------------------
+      Total |      9,412      100.00
+
+. 
+. *\ Self-reported health
+. rename r13shlt selfreportedhealth
+
+. tab selfreportedhealth, m nolab
+
+r13shlt:w13 |
+self-report |
+  of health |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |        642        6.82        6.82
+          2 |      2,582       27.43       34.25
+          3 |      3,304       35.10       69.36
+          4 |      2,152       22.86       92.22
+          5 |        717        7.62       99.84
+         .d |         12        0.13       99.97
+         .r |          3        0.03      100.00
+------------+-----------------------------------
+      Total |      9,412      100.00
+
+. tab selfreportedhealth, m
+
+r13shlt:w13 |
+self-report |
+  of health |      Freq.     Percent        Cum.
+------------+-----------------------------------
+1.excellent |        642        6.82        6.82
+2.very good |      2,582       27.43       34.25
+     3.good |      3,304       35.10       69.36
+     4.fair |      2,152       22.86       92.22
+     5.poor |        717        7.62       99.84
+         .d |         12        0.13       99.97
+         .r |          3        0.03      100.00
+------------+-----------------------------------
+      Total |      9,412      100.00
+
+. replace selfreportedhealth = 0 if selfreportedhealth == .r | selfreportedhealth == .d
+(15 real changes made)
+
+. tab selfreportedhealth, m nolab
+
+r13shlt:w13 |
+self-report |
+  of health |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |         15        0.16        0.16
+          1 |        642        6.82        6.98
+          2 |      2,582       27.43       34.41
+          3 |      3,304       35.10       69.52
+          4 |      2,152       22.86       92.38
+          5 |        717        7.62      100.00
+------------+-----------------------------------
+      Total |      9,412      100.00
+
+. tab selfreportedhealth, m
+
+r13shlt:w13 |
+self-report |
+  of health |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |         15        0.16        0.16
+1.excellent |        642        6.82        6.98
+2.very good |      2,582       27.43       34.41
+     3.good |      3,304       35.10       69.52
+     4.fair |      2,152       22.86       92.38
+     5.poor |        717        7.62      100.00
+------------+-----------------------------------
+      Total |      9,412      100.00
+
+. tab selfreportedhealth[aweight=r13wtrespe], m
+
+r13shlt:w13 |
+self-report |
+  of health |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |  14.238623        0.15        0.15
+1.excellent | 706.987733        7.51        7.66
+2.very good | 2,894.5302       30.75       38.42
+     3.good |  3,295.451       35.01       73.43
+     4.fair |  1,885.887       20.04       93.47
+     5.poor | 614.905415        6.53      100.00
+------------+-----------------------------------
+      Total |      9,412      100.00
+
+. 
+. 
+. **********************************************************************
+. * Table 1- Residential Facility *
+. **********************************************************************
+. *\ Read in Residential Facility dataset
+. use `rensidentialfacility', clear
+
+. 
+. *\ Age
+. ***raw mean
+. summarize age 
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+         age |        186    83.73656    7.937626         65        100
+
+. summarize age [aweight=r13wtrespe]
+
+    Variable |     Obs      Weight        Mean   Std. dev.       Min        Max
+-------------+-----------------------------------------------------------------
+         age |     186      865720    84.05277   8.629672         65        100
+
+. 
+. *\ Gender
+. rename ragender gender
+
+. tab gender, m 
+
+ragender: r |
+     gender |      Freq.     Percent        Cum.
+------------+-----------------------------------
+     1.male |         57       30.65       30.65
+   2.female |        129       69.35      100.00
+------------+-----------------------------------
+      Total |        186      100.00
+
+. tab gender[aweight=r13wtrespe], m
+
+ragender: r |
+     gender |      Freq.     Percent        Cum.
+------------+-----------------------------------
+     1.male |  58.072684       31.22       31.22
+   2.female | 127.927316       68.78      100.00
+------------+-----------------------------------
+      Total |        186      100.00
+
+. 
+. *\ Race and Ethnicity
+. tablist raracem rahispan, nolab
+
+  +----------------------------------------------------------+
+  | raracem   rahispan   _Freq_   _Perc_   _CFreq_   _CPerc_ |
+  |----------------------------------------------------------|
+  |       1          0      159    85.48       159     85.48 |
+  |       2          0       17     9.14       176     94.62 |
+  |       3          0        4     2.15       180     96.77 |
+  |       3          1        3     1.61       183     98.39 |
+  |       1          1        3     1.61       186    100.00 |
+  +----------------------------------------------------------+
+
+. gen Race_Ethinic = 0
+
+. replace Race_Ethinic=1 if raracem == 1 & rahispan == 0 //non-hispanic white
+(159 real changes made)
+
+. replace Race_Ethinic=2 if raracem == 2 & rahispan == 0 //non-hispanic black
+(17 real changes made)
+
+. replace Race_Ethinic=3 if raracem == 3 & rahispan == 0 //non-hispanic other
+(4 real changes made)
+
+. replace Race_Ethinic=4 if rahispan == 1 //Hispanic-regardless of race
+(6 real changes made)
+
+. tab Race_Ethinic, m nolab
+
+Race_Ethini |
+          c |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |        159       85.48       85.48
+          2 |         17        9.14       94.62
+          3 |          4        2.15       96.77
+          4 |          6        3.23      100.00
+------------+-----------------------------------
+      Total |        186      100.00
+
+. tab Race_Ethinic[aweight=r13wtrespe], m
+
+Race_Ethini |
+          c |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 | 161.292457       86.72       86.72
+          2 | 14.6789863        7.89       94.61
+          3 | 7.02151504        3.78       98.38
+          4 | 3.00704154        1.62      100.00
+------------+-----------------------------------
+      Total |        186      100.00
+
+. 
+. *\ Marital Status
+. gen Marital_Status = 0
+
+. replace Marital_Status = 1 if inlist(r13mstat,1,2,3) //Married/Living with partner
+(59 real changes made)
+
+. replace Marital_Status = 2 if inlist(r13mstat,4,5,7) //Divorced/Separate/Widowed
+(118 real changes made)
+
+. replace Marital_Status = 3 if r13mstat==8 //Never married
+(9 real changes made)
+
+. tab Marital_Status, m
+
+Marital_Sta |
+        tus |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |         59       31.72       31.72
+          2 |        118       63.44       95.16
+          3 |          9        4.84      100.00
+------------+-----------------------------------
+      Total |        186      100.00
+
+. tab Marital_Status[aweight=r13wtrespe], m
+
+Marital_Sta |
+        tus |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 | 52.6926235       28.33       28.33
+          2 | 118.956896       63.96       92.28
+          3 | 14.3504805        7.72      100.00
+------------+-----------------------------------
+      Total |        186      100.00
+
+. 
+. *\ Self-reported health
+. rename r13shlt selfreportedhealth
+
+. tab selfreportedhealth, m nolab
+
+r13shlt:w13 |
+self-report |
+  of health |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |         14        7.53        7.53
+          2 |         44       23.66       31.18
+          3 |         60       32.26       63.44
+          4 |         52       27.96       91.40
+          5 |         16        8.60      100.00
+------------+-----------------------------------
+      Total |        186      100.00
+
+. tab selfreportedhealth, m
+
+r13shlt:w13 |
+self-report |
+  of health |      Freq.     Percent        Cum.
+------------+-----------------------------------
+1.excellent |         14        7.53        7.53
+2.very good |         44       23.66       31.18
+     3.good |         60       32.26       63.44
+     4.fair |         52       27.96       91.40
+     5.poor |         16        8.60      100.00
+------------+-----------------------------------
+      Total |        186      100.00
+
+. replace selfreportedhealth = 0 if selfreportedhealth == .r | selfreportedhealth == .d
+(0 real changes made)
+
+. tab selfreportedhealth, m nolab
+
+r13shlt:w13 |
+self-report |
+  of health |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |         14        7.53        7.53
+          2 |         44       23.66       31.18
+          3 |         60       32.26       63.44
+          4 |         52       27.96       91.40
+          5 |         16        8.60      100.00
+------------+-----------------------------------
+      Total |        186      100.00
+
+. tab selfreportedhealth, m
+
+r13shlt:w13 |
+self-report |
+  of health |      Freq.     Percent        Cum.
+------------+-----------------------------------
+1.excellent |         14        7.53        7.53
+2.very good |         44       23.66       31.18
+     3.good |         60       32.26       63.44
+     4.fair |         52       27.96       91.40
+     5.poor |         16        8.60      100.00
+------------+-----------------------------------
+      Total |        186      100.00
+
+. tab selfreportedhealth[aweight=r13wtrespe], m
+
+r13shlt:w13 |
+self-report |
+  of health |      Freq.     Percent        Cum.
+------------+-----------------------------------
+1.excellent | 12.1110983        6.51        6.51
+2.very good | 48.5137897       26.08       32.59
+     3.good | 54.2101095       29.15       61.74
+     4.fair | 54.1761632       29.13       90.87
+     5.poor | 16.9888393        9.13      100.00
+------------+-----------------------------------
+      Total |        186      100.00
+
+. 
+. 
+. **********************************************************************
+. * Table 1- Nursing Home  *
+. **********************************************************************
+. *\ Read in Nursing Home dataset
+. use `nursinghome', clear
+
+. 
+. *\ Age
+. ***raw mean
+. summarize age
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+         age |        396    85.25758    8.215103         65        103
+
+. summarize age [aweight=r13wtrespe]
+
+    Variable |     Obs      Weight        Mean   Std. dev.       Min        Max
+-------------+-----------------------------------------------------------------
+         age |     396     1836541    85.61977   9.045135         65        103
+
+. egen newvar = wtmean(age), weight(r13wtrespe)
+
+. 
+. *\ Gender
+. rename ragender gender
+
+. tab gender, m 
+
+ragender: r |
+     gender |      Freq.     Percent        Cum.
+------------+-----------------------------------
+     1.male |        122       30.81       30.81
+   2.female |        274       69.19      100.00
+------------+-----------------------------------
+      Total |        396      100.00
+
+. tab gender[aweight=r13wtrespe], m
+
+ragender: r |
+     gender |      Freq.     Percent        Cum.
+------------+-----------------------------------
+     1.male | 121.342343       30.64       30.64
+   2.female | 274.657657       69.36      100.00
+------------+-----------------------------------
+      Total |        396      100.00
+
+. 
+. *\ Race and Ethnicity
+. tablist raracem rahispan, nolab
+
+  +----------------------------------------------------------+
+  | raracem   rahispan   _Freq_   _Perc_   _CFreq_   _CPerc_ |
+  |----------------------------------------------------------|
+  |       1          0      323    81.57       323     81.57 |
+  |       2          0       48    12.12       371     93.69 |
+  |       1          1       12     3.03       383     96.72 |
+  |       3          1        6     1.52       389     98.23 |
+  |       3          0        6     1.52       395     99.75 |
+  |----------------------------------------------------------|
+  |       2          1        1     0.25       396    100.00 |
+  +----------------------------------------------------------+
+
+. gen Race_Ethinic = 0
+
+. replace Race_Ethinic=1 if raracem == 1 & rahispan == 0 //non-hispanic white
+(323 real changes made)
+
+. replace Race_Ethinic=2 if raracem == 2 & rahispan == 0 //non-hispanic black
+(48 real changes made)
+
+. replace Race_Ethinic=3 if raracem == 3 & rahispan == 0 //non-hispanic other
+(6 real changes made)
+
+. replace Race_Ethinic=4 if rahispan == 1 //Hispanic-regardless of race
+(19 real changes made)
+
+. tab Race_Ethinic, m nolab
+
+Race_Ethini |
+          c |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |        323       81.57       81.57
+          2 |         48       12.12       93.69
+          3 |          6        1.52       95.20
+          4 |         19        4.80      100.00
+------------+-----------------------------------
+      Total |        396      100.00
+
+. tab Race_Ethinic[aweight=r13wtrespe], m
+
+Race_Ethini |
+          c |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 | 344.672948       87.04       87.04
+          2 | 28.3716399        7.16       94.20
+          3 | 7.81330556        1.97       96.18
+          4 | 15.1421068        3.82      100.00
+------------+-----------------------------------
+      Total |        396      100.00
+
+. 
+. *\ Marital Status
+. gen Marital_Status = 0
+
+. replace Marital_Status = 1 if inlist(r13mstat,1,2,3) //Married/Living with partner
+(76 real changes made)
+
+. replace Marital_Status = 2 if inlist(r13mstat,4,5,7) //Divorced/Separate/Widowed
+(309 real changes made)
+
+. replace Marital_Status = 3 if r13mstat==8 //Never married
+(11 real changes made)
+
+. tab Marital_Status, m
+
+Marital_Sta |
+        tus |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |         76       19.19       19.19
+          2 |        309       78.03       97.22
+          3 |         11        2.78      100.00
+------------+-----------------------------------
+      Total |        396      100.00
+
+. tab Marital_Status[aweight=r13wtrespe], m
+
+Marital_Sta |
+        tus |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |  60.859518       15.37       15.37
+          2 | 318.902796       80.53       95.90
+          3 |  16.237686        4.10      100.00
+------------+-----------------------------------
+      Total |        396      100.00
+
+. 
+. *\ Self-reported health
+. rename r13shlt selfreportedhealth
+
+. tab selfreportedhealth, m nolab
+
+r13shlt:w13 |
+self-report |
+  of health |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |         15        3.79        3.79
+          2 |         41       10.35       14.14
+          3 |         83       20.96       35.10
+          4 |        135       34.09       69.19
+          5 |        121       30.56       99.75
+         .d |          1        0.25      100.00
+------------+-----------------------------------
+      Total |        396      100.00
+
+. tab selfreportedhealth, m
+
+r13shlt:w13 |
+self-report |
+  of health |      Freq.     Percent        Cum.
+------------+-----------------------------------
+1.excellent |         15        3.79        3.79
+2.very good |         41       10.35       14.14
+     3.good |         83       20.96       35.10
+     4.fair |        135       34.09       69.19
+     5.poor |        121       30.56       99.75
+         .d |          1        0.25      100.00
+------------+-----------------------------------
+      Total |        396      100.00
+
+. replace selfreportedhealth = 0 if selfreportedhealth == .r | selfreportedhealth == .d
+(1 real change made)
+
+. tab selfreportedhealth, m nolab
+
+r13shlt:w13 |
+self-report |
+  of health |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |          1        0.25        0.25
+          1 |         15        3.79        4.04
+          2 |         41       10.35       14.39
+          3 |         83       20.96       35.35
+          4 |        135       34.09       69.44
+          5 |        121       30.56      100.00
+------------+-----------------------------------
+      Total |        396      100.00
+
+. tab selfreportedhealth, m
+
+r13shlt:w13 |
+self-report |
+  of health |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |          1        0.25        0.25
+1.excellent |         15        3.79        4.04
+2.very good |         41       10.35       14.39
+     3.good |         83       20.96       35.35
+     4.fair |        135       34.09       69.44
+     5.poor |        121       30.56      100.00
+------------+-----------------------------------
+      Total |        396      100.00
+
+. tab selfreportedhealth[aweight=r13wtrespe], m
+
+r13shlt:w13 |
+self-report |
+  of health |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | .620130996        0.16        0.16
+1.excellent | 15.6708138        3.96        4.11
+2.very good | 42.7702796       10.80       14.91
+     3.good |  87.933109       22.21       37.12
+     4.fair | 130.547062       32.97       70.09
+     5.poor | 118.458605       29.91      100.00
+------------+-----------------------------------
+      Total |        396      100.00
+
+. 
+. 
+. capture log close
