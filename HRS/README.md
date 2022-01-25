@@ -36,11 +36,7 @@ The following describes how the files correspond to the inputs and output:
 
 | File | Description | Inputs/Outputs | Notes |
 | --- | --- | --- | --- |
-| 00\_master.do | Sets macros for all variables, specifications, and replications used in the other files |
- | Only edit the global folder and the individual global macros |
+| 00\_master.do | Sets macros for all variables, specifications, and replications used in the other files | Only edit the global folder and the individual global macros |
 | 01\_clean\_merge.do | Cleans and merges all raw data files | Input: h16f2a, RAND HRS randhrs1992\_2016v2.dta, H16G\_HP.da and H16G\_HP.dctOutput: randhrs2016.dta, helper.dta, nursinghome.dta, communitydwelling,dta |
- |
 | 02\_sampledemographics.do | Creates sample demographics | Input: nursinghome.dta, communitydwelling.dtaOutput: Statistics in sample demographics table |
- |
 | 02\_summarystatistics.do | Creates summary statistics | Input: nursinghome.dta, communitydwelling.dtaOutput: Statistics in summary statistic table |
- |
