@@ -27,11 +27,11 @@ GENERAL NOTES:
 if 1 {
 
 *select path
-gl csun  1
-gl name  0
+gl cs    0
+gl name  1
 
-	if $csun {
-	gl folder 					"/project/coe_eol/Sun/ICinLTC/"  
+	if $cs {
+	gl folder 					""  
 	}
 
 	if $name {
