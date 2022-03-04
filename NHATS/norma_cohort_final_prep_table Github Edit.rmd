@@ -1,0 +1,84 @@
+---
+title: "table1"
+output: html_document
+  pdf_document: default
+  word_document: default
+classoption: landscape
+---
+
+```{r}
+setwd("/PATH/")
+```
+
+```{r setup, include=FALSE}
+library(tableone)
+library(survey)
+options(survey.lonely.psu="certainty")
+```
+
+### IMPORT
+```{r}
+cohort = read.csv("./norma_cohort_20210517.csv", header = TRUE, sep = ",")
+```
+
+### APPLY WEIGHTS
+```{r}
+cohort_svy = svydesign(ids = ~ SPID, strata = ~ W5VARSTRAT, weights = ~ ANA_FINAL_WT0, nest = TRUE, data = cohort)
+```
+
+### VARIABLES
+```{r}
+allvars = c("AGE",  "GENDER", "RACE", "MARITAL", "OVERALL_HEALTH",
+            "MO_HELP", "MO_OUT_EDIT", "MO_IN_EDIT", "MO_BED_EDIT", 
+            "SC_HELP", "SC_EAT_EDIT", "SC_BATH_EDIT", "SC_TOIL_EDIT", "SC_DRES_EDIT",
+            "HA_HELP", "HA_LAUN_EDIT", "HA_SHOP_EDIT", "HA_MEAL_EDIT", "HA_BANK_EDIT", 
+             "MC_HELP", "MC_MED_EDIT")
+catvars = c("GENDER", "RACE", "MARITAL", "OVERALL_HEALTH",
+            "MO_HELP", "MO_OUT_EDIT", "MO_IN_EDIT", "MO_BED_EDIT", 
+            "SC_HELP", "SC_EAT_EDIT", "SC_BATH_EDIT", "SC_TOIL_EDIT", "SC_DRES_EDIT",
+            "HA_HELP", "HA_LAUN_EDIT", "HA_SHOP_EDIT", "HA_MEAL_EDIT", "HA_BANK_EDIT", 
+             "MC_HELP", "MC_MED_EDIT")
+
+needhelp = c("NEEDHELP_MO", "NEEDHELP_MO_OUT", "NEEDHELP_MO_INS", "NEEDHELP_MO_BED", "NEEDHELP_SC", "NEEDHELP_SC_EAT", "NEEDHELP_SC_CLEAN", "NEEDHELP_SC_TOILET", 
+  "NEEDHELP_SC_DRESS", "NEEDHELP_HA", "NEEDHELP_HA_LAUN", "NEEDHELP_HA_SHOP", "NEEDHELP_HA_MEAL", "NEEDHELP_HA_BANK", "NEEDHELP_MC", "NEEDHELP_MC_MEDS")
+
+receive_if_need = c("MO_HELP2", "MO_OUT_EDIT2", "MO_IN_EDIT2", "MO_BED_EDIT2", "SC_HELP2", "SC_EAT_EDIT2", "SC_BATH_EDIT2", "SC_TOIL_EDIT2", "SC_DRES_EDIT2", "HA_HELP2", "HA_LAUN_EDIT2", "HA_SHOP_EDIT2", "HA_MEAL_EDIT2", "HA_BANK_EDIT2", "MC_HELP2", "MC_MED_EDIT2")
+```
+
+# main cohort descriptive
+## unweighted, table 1 & 3
+```{r}
+tb_uwt = CreateTableOne(vars = allvars, data = cohort, test = FALSE, factorVars = catvars, includeNA = TRUE, strata = "R5DRESID")
+print(tb_uwt, showAllLevels = TRUE, contDigits = 1, catDigits = 0, quote = FALSE, noSpaces = TRUE, format = "fp")
+```
+## weighted, table 1 & 3
+```{r}
+tb_wt = svyCreateTableOne(vars = allvars, data = cohort_svy, test = FALSE, factorVars = catvars, includeNA = TRUE, strata = "R5DRESID")
+print(tb_wt, showAllLevels = TRUE, contDigits = 1, catDigits = 1, quote = FALSE, noSpaces = TRUE, format = "p")
+```
+
+# NEED HELP
+## unweighted, table 2
+```{r}
+tb2_uwt_by = CreateTableOne(vars = needhelp, data = cohort, test = FALSE, factorVars = needhelp, includeNA = TRUE, strata = "R5DRESID")
+print(tb2_uwt_by, showAllLevels = TRUE, contDigits = 1, catDigits = 0, quote = FALSE, noSpaces = TRUE, format = "fp")
+```
+## weighted, table 2
+```{r}
+tb2_wt_by = svyCreateTableOne(vars = needhelp, data = cohort_svy, test = FALSE, factorVars = needhelp, includeNA = TRUE, strata = "R5DRESID")
+print(tb2_wt_by, showAllLevels = TRUE, contDigits = 1, catDigits = 1, quote = FALSE, noSpaces = TRUE, format = "p")
+```
+
+
+# GET HELP AMONG NEED HELP
+## unweighted, table 4
+```{r}
+tb4_uwt_by = CreateTableOne(vars = receive_if_need, data = cohort, test = FALSE, factorVars = receive_if_need, includeNA = FALSE, strata = "R5DRESID")
+print(tb4_uwt_by, showAllLevels = TRUE, contDigits = 1, catDigits = 0, quote = FALSE, noSpaces = TRUE, format = "fp")
+```
+## weighted, table 4
+```{r}
+tb4_wt_by = svyCreateTableOne(vars = receive_if_need, data = cohort_svy, test = FALSE, factorVars = receive_if_need, includeNA = FALSE, strata = "R5DRESID")
+print(tb4_wt_by, showAllLevels = TRUE, contDigits = 1, catDigits = 1, quote = FALSE, noSpaces = TRUE, format = "p")
+```
+
